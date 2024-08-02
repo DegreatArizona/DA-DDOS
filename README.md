@@ -4,11 +4,11 @@
 ```
 DA-DDOS/
 │
-├── README.md
-├── LICENSE
 ├── .gitignore
-├── requirements.txt
-└── ddos.py
+├── LICENSE
+├── README.md
+├── ddos.py
+└── requirements.txt
 ```
 
 ## `README.md`
