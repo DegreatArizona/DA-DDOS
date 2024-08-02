@@ -115,6 +115,11 @@ termcolor
 143E54wEKY11g3D7G2czfrJebf19t5S9CJ
 ```
 
+### Screanshot
+![image](https://github.com/user-attachments/assets/132ffb1f-62c2-4fdb-a0b0-3ebf43347037)
+![image](https://github.com/user-attachments/assets/6dd66e09-fb2e-4169-b432-e404c7eb4f25)
+
+
 ### `ddos.py`
 (This is your main script file. Copy your debugged script content here.)
 
