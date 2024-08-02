@@ -121,7 +121,7 @@ termcolor
 
 
 ### `ddos.py`
-(This is your main script file. Copy your debugged script content here.)
+
 
 ```python
 #!/usr/bin/env python
