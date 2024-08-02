@@ -35,7 +35,7 @@ This tool is written for educational purposes only. It demonstrates how differen
 Clone the repository:
 
 ```sh
-git clone https://github.com/yourusername/DDoS-Tool.git
+git clone https://github.com/DegreatArizona/DA-DDOS.git
 cd DDoS-Tool
 ```
 
